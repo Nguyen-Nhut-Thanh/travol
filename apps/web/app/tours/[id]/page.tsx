@@ -64,11 +64,11 @@ export default function TourDetailPage() {
       event_type: "tour_view",
       source: "tour_detail",
       tour_id: tour.tour_id,
-      destination: tour.destinations?.[0]?.name || undefined,
+      destination: tour.tour_destinations?.[0]?.name || undefined,
       metadata: {
         duration_days: tour.duration_days,
         duration_nights: tour.duration_nights,
-        departure_location: tour.departure_location?.name || null,
+        departure_location: tour.departure_locations?.name || null,
         tour_type: tour.tour_type,
       },
     });

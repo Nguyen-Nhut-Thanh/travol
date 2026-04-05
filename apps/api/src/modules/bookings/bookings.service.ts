@@ -238,6 +238,52 @@ export class BookingsService {
     };
   }
 
+  async getAdminBookingDetail(bookingId: number, isStaff: boolean) {
+    if (!isStaff) {
+      throw new ForbiddenException('Bạn không có quyền truy cập.');
+    }
+
+    const booking = await this.prisma.bookings.findUnique({
+      where: { booking_id: bookingId },
+      include: {
+        users: {
+          select: {
+            full_name: true,
+            phone: true,
+            accounts: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
+        tour_schedules: {
+          include: {
+            tours: {
+              include: {
+                tour_images: { where: { is_cover: 1 }, take: 1 },
+                departure_locations: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        booking_travelers: true,
+        payments: true,
+        vouchers: true,
+      },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Không tìm thấy booking.');
+    }
+
+    return booking;
+  }
+
   async getBookingDetail(bookingId: number, userId: number) {
     return this.prisma.bookings.findFirst({
       where: { booking_id: bookingId, user_id: userId },

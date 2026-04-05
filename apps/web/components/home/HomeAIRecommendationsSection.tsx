@@ -73,7 +73,6 @@ function RecommendationCard({
 
   const imageUrl = normalizeImageSrc(tour.image_url) || "/placeholder-tour.jpg";
 
-  // Lọc bỏ lý do "Còn chỗ khả dụng" và lấy tối đa 3 lý do
   const displayReasons = tour.reasons
     .filter((r) => r !== "Còn chỗ khả dụng")
     .slice(0, 3);
@@ -339,15 +338,6 @@ export default function HomeAIRecommendationsSection() {
       <div className="mx-auto max-w-[1440px]">
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-600">
-                <Sparkles size={18} />
-              </div>
-              <span className="text-sm font-bold uppercase tracking-widest text-sky-600">
-                AI Personalization
-              </span>
-            </div>
-
             <div className="relative inline-block">
               <h2 className="text-3xl font-black uppercase tracking-tight text-[#0f5cab] sm:text-4xl">
                 {user?.user_id ? "DÀNH RIÊNG CHO BẠN" : "GỢI Ý TOUR NỔI BẬT"}
@@ -465,4 +455,3 @@ export default function HomeAIRecommendationsSection() {
     </section>
   );
 }
-

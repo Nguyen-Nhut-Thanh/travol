@@ -86,6 +86,17 @@ export class BookingsController {
     );
   }
 
+  @Get('admin/:id')
+  async getAdminDetail(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthRequest,
+  ) {
+    return this.bookingsService.getAdminBookingDetail(
+      id,
+      Boolean(req.user.isStaff),
+    );
+  }
+
   @Post(':id/cancel-request')
   async requestCancel(
     @Param('id', ParseIntPipe) id: number,
