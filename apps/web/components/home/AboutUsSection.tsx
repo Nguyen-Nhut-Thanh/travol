@@ -41,7 +41,7 @@ export default function AboutUsSection() {
   ];
 
   return (
-    <section className="px-4 py-16 sm:px-6 lg:px-20 bg-white overflow-hidden">
+    <section className="px-4 pt-16 pb-8 sm:px-6 lg:px-20 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Cột trái: Nội dung */}

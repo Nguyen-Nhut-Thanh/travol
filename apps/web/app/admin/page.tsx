@@ -8,14 +8,16 @@ import {
   Clock,
   DollarSign,
   Image as ImageIcon,
+  Loader2,
   Map,
   Ticket,
   TrendingUp,
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { getDashboardStats, type DashboardStats } from "@/lib/admin/dashboardApi";
+import { getDashboardStats, getDashboardReport, type DashboardStats } from "@/lib/admin/dashboardApi";
 import { formatVND } from "@/lib/utils";
+import { useToast } from "@/components/common/Toast";
 
 type BookingStatus = "confirmed" | "pending" | "completed" | "cancelled" | string;
 
@@ -31,7 +33,9 @@ type DashboardStat = {
 export default function AdminDashboard() {
   const [data, setData] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState("month");
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     let active = true;
@@ -39,7 +43,7 @@ export default function AdminDashboard() {
     async function loadData() {
       try {
         setLoading(true);
-        const stats = await getDashboardStats();
+        const stats = await getDashboardStats(timeRange);
         if (active) {
           setData(stats);
           setError(null);
@@ -59,39 +63,46 @@ export default function AdminDashboard() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [timeRange]);
+
+  const rangeLabels: Record<string, string> = {
+    "7d": "7 ngày qua",
+    "30d": "30 ngày qua",
+    month: "Tháng này",
+    year: "Năm nay",
+  };
 
   const stats: DashboardStat[] = [
     { 
-      label: "Tổng doanh thu", 
+      label: `Doanh thu (${rangeLabels[timeRange]})`, 
       value: data ? formatVND(data.totalRevenue) : "0đ", 
       icon: DollarSign, 
-      trend: "+12.5%", 
-      isUp: true, 
+      trend: `${data?.revenueTrend && data.revenueTrend > 0 ? "+" : ""}${data?.revenueTrend || 0}%`, 
+      isUp: (data?.revenueTrend || 0) >= 0, 
       color: "bg-blue-50 text-blue-600" 
     },
     { 
-      label: "Đơn đặt tour (tháng)", 
+      label: `Đơn đặt tour (${rangeLabels[timeRange]})`, 
       value: data?.bookingsThisMonth || 0, 
       icon: Briefcase, 
-      trend: "+8.2%", 
-      isUp: true, 
+      trend: `${data?.bookingsTrend && data.bookingsTrend > 0 ? "+" : ""}${data?.bookingsTrend || 0}%`, 
+      isUp: (data?.bookingsTrend || 0) >= 0, 
       color: "bg-emerald-50 text-emerald-600" 
     },
     { 
       label: "Tour đang hoạt động", 
       value: data?.activeTours || 0, 
       icon: Map, 
-      trend: "-2.1%", 
-      isUp: false, 
+      trend: "Ổn định", 
+      isUp: true, 
       color: "bg-indigo-50 text-indigo-600" 
     },
     { 
-      label: "Khách hàng mới", 
+      label: `Khách hàng mới (${rangeLabels[timeRange]})`, 
       value: data?.newUsers || 0, 
       icon: Users, 
-      trend: "+18.4%", 
-      isUp: true, 
+      trend: `${data?.usersTrend && data.usersTrend > 0 ? "+" : ""}${data?.usersTrend || 0}%`, 
+      isUp: (data?.usersTrend || 0) >= 0, 
       color: "bg-rose-50 text-rose-600" 
     },
   ];
@@ -142,15 +153,16 @@ export default function AdminDashboard() {
           <p className="text-sm text-slate-500 mt-1">Tổng quan tình hình kinh doanh và vận hành.</p>
         </div>
         <div className="flex items-center gap-3">
-          <select className="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500/20">
-            <option>7 ngày qua</option>
-            <option>30 ngày qua</option>
-            <option>Tháng này</option>
-            <option>Năm nay</option>
+          <select 
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+            className="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500/20"
+          >
+            <option value="7d">7 ngày qua</option>
+            <option value="30d">30 ngày qua</option>
+            <option value="month">Tháng này</option>
+            <option value="year">Năm nay</option>
           </select>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm">
-            Tải báo cáo
-          </button>
         </div>
       </div>
 

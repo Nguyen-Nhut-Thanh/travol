@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { ChevronDown, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, Search, ChevronLeft, ChevronRight, Wallet } from "lucide-react";
 import { useSearchBar, BUDGET_OPTIONS, MONTH_LABELS, WEEKDAY_HEADERS, isSameDate, formatDisplayDate } from "./useSearchBar";
+import CustomDropdown from "@/components/common/CustomDropdown";
 
 export default function SearchBar() {
   const budgetDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -79,31 +80,18 @@ export default function SearchBar() {
             </div>
 
             {/* Budget Dropdown */}
-            <div ref={budgetDropdownRef} className="relative md:col-span-3 md:border-l md:border-gray-200 md:px-6">
-              <label htmlFor="tour-budget-trigger" className="text-[15px] font-semibold text-[#1f1f1f]">Ngân sách</label>
-              <button
-                id="tour-budget-trigger"
-                type="button"
-                onClick={() => actions.setIsBudgetOpen(!state.isBudgetOpen)}
-                className="mt-3 flex w-full items-center justify-between gap-3 border-0 bg-transparent px-0 py-0 text-left text-[16px] font-semibold focus:ring-0 md:text-[17px]"
-              >
-                <span>{state.budget.label}</span>
-                <ChevronDown className={`h-5 w-5 shrink-0 transition-transform ${state.isBudgetOpen ? "rotate-180" : ""}`} />
-              </button>
-              <div className={`absolute left-0 top-[calc(100%+14px)] z-50 w-full rounded-2xl border bg-[#f7f7f7] p-4 shadow-xl transition-all md:min-w-[270px] ${state.isBudgetOpen ? "opacity-100 scale-100" : "pointer-events-none opacity-0 scale-95"}`}>
-                <div className="space-y-3">
-                  {visibleBudgetOptions.map(item => (
-                    <button
-                      key={item.label}
-                      type="button"
-                      onClick={() => actions.handleBudgetSelect(item.label)}
-                      className={`w-full rounded-md border px-3 py-3 text-left transition-all ${state.budget.label === item.label ? "border-sky-500 bg-sky-50 text-sky-700" : "bg-white hover:bg-sky-50"}`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            <div className="relative md:col-span-3 md:border-l md:border-gray-200 md:px-6">
+              <CustomDropdown
+                label="Ngân sách"
+                variant="minimal"
+                options={BUDGET_OPTIONS.filter((_, index) => index !== 0).map((opt) => ({
+                  label: opt.label,
+                  value: opt.label,
+                }))}
+                selectedValue={state.budget.label}
+                onSelect={(val) => actions.handleBudgetSelect(val)}
+                placeholder="Chọn ngân sách"
+              />
             </div>
 
             {/* Submit Button */}

@@ -90,13 +90,8 @@ export default function AdminTourPoliciesPage() {
             <ScrollText size={18} />
           </div>
         }
-        bodyClassName="space-y-6 p-8"
+        bodyClassName="space-y-6 p-6"
       >
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-          Mỗi hàng là một nhóm nội dung riêng. Nhấn vào từng mục để nhập hoặc cập
-          nhật nội dung hiển thị ở trang chi tiết tour.
-        </div>
-
         <TourPoliciesAccordionEditor
           value={tour.policy_contents}
           onChange={(policy_contents) =>

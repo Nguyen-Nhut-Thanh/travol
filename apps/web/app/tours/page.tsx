@@ -4,16 +4,10 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Search,
-  MapPin,
-  Hash,
-  Clock,
-  Hotel,
-  Calendar,
-} from "lucide-react";
+import { Search, MapPin, Hash, Clock, Hotel, Calendar, Wallet } from "lucide-react";
 import TransportIcon from "@/components/common/TransportIcon";
 import FavoriteButton from "@/components/common/FavoriteButton";
+import CustomDropdown from "@/components/common/CustomDropdown";
 import { useToast } from "@/components/common/Toast";
 import { getPublicTours } from "@/lib/publicFetch";
 import { trackRecommendationEvent } from "@/lib/recommendationTracker";
@@ -61,12 +55,8 @@ function ToursContent() {
       "",
   );
   const [dateFrom, setDateFrom] = useState(searchParams.get("date_from") || "");
-  const [minPrice, setMinPrice] = useState(
-    searchParams.get("min_price") || "",
-  );
-  const [maxPrice, setMaxPrice] = useState(
-    searchParams.get("max_price") || "",
-  );
+  const [minPrice, setMinPrice] = useState(searchParams.get("min_price") || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("max_price") || "");
   const [collection, setCollection] = useState(
     searchParams.get("collection") || "",
   );
@@ -236,6 +226,15 @@ function ToursContent() {
     });
   };
 
+  const budgetOptions = [
+    { label: "Tất cả mức giá", value: "-1" },
+    ...BUDGET_PRESETS.map((p, idx) => ({ label: p.label, value: idx.toString() })),
+  ];
+
+  const selectedBudgetVal = BUDGET_PRESETS.findIndex(
+    (p) => (p.min_price || "") === minPrice && (p.max_price || "") === maxPrice,
+  ).toString();
+
   return (
     <div className="mx-auto max-w-7xl">
       <div className="flex flex-col gap-8 lg:h-[calc(100dvh-64px)] lg:flex-row lg:gap-8 lg:overflow-hidden">
@@ -292,48 +291,20 @@ function ToursContent() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[14px] font-extrabold uppercase tracking-wider text-slate-600">
-                  Ngân sách
-                </label>
-                <div className="flex flex-col gap-2">
-                  <button
-                    type="button"
-                    onClick={clearBudgetPreset}
-                    className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-[14px] font-bold transition ${
-                      !minPrice && !maxPrice
-                        ? "bg-sky-100 text-sky-700"
-                        : "text-slate-500 hover:bg-gray-50 hover:text-gray-700"
-                    }`}
-                  >
-                    Tất cả mức giá
-                    {!minPrice && !maxPrice && (
-                      <span className="text-[10px]">●</span>
-                    )}
-                  </button>
-                  {BUDGET_PRESETS.map((item) => {
-                    const isActive =
-                      (item.min_price || "") === minPrice &&
-                      (item.max_price || "") === maxPrice;
-
-                    return (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => selectBudgetPreset(item)}
-                        className={`flex items-center justify-between rounded-lg px-3 py-2 text-[13px] font-medium transition ${
-                          isActive
-                            ? "bg-sky-50 text-sky-600"
-                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                        }`}
-                      >
-                        {item.label}
-                        {isActive && <span className="text-[10px]">●</span>}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <CustomDropdown
+                label="Ngân sách"
+                icon={Wallet}
+                options={budgetOptions}
+                selectedValue={selectedBudgetVal === "-1" ? "" : selectedBudgetVal}
+                placeholder="Tất cả mức giá"
+                onSelect={(val) => {
+                  if (val === "-1") {
+                    clearBudgetPreset();
+                  } else {
+                    selectBudgetPreset(BUDGET_PRESETS[parseInt(val)]);
+                  }
+                }}
+              />
 
               <button
                 type="button"
@@ -554,7 +525,14 @@ function ToursContent() {
                                       )}
                                     </p>
                                     <span className="rounded-md bg-red-50 px-1.5 py-0.5 text-[10px] font-black text-red-600 border border-red-100">
-                                      -{Math.round(((tour.next_schedule.original_price - tour.next_schedule.price) / tour.next_schedule.original_price) * 100)}%
+                                      -
+                                      {Math.round(
+                                        ((tour.next_schedule.original_price -
+                                          tour.next_schedule.price) /
+                                          tour.next_schedule.original_price) *
+                                          100,
+                                      )}
+                                      %
                                     </span>
                                   </div>
                                 )}

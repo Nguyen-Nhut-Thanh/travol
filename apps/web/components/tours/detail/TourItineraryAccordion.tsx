@@ -22,7 +22,7 @@ export default function TourItineraryAccordion({ itinerary }: Props) {
   };
 
   return (
-    <section className="bg-white py-12">
+    <section className="bg-white pt-4 pb-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 className="mb-8 text-center text-2xl font-extrabold uppercase text-slate-900">
           Lịch trình

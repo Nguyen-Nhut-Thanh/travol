@@ -117,7 +117,7 @@ function RecommendationCard({
           />
 
           <div className="absolute right-3 top-3 flex flex-col gap-2">
-            <div className="rounded-full bg-sky-600/90 px-3 py-1 text-[10px] font-bold text-white shadow-lg backdrop-blur-sm">
+            <div className="rounded-full bg-red-500/90 px-3 py-1 text-[10px] font-bold text-white shadow-lg backdrop-blur-sm">
               Đề xuất cho bạn
             </div>
           </div>
@@ -169,7 +169,7 @@ function RecommendationCard({
               <span className="text-[10px] font-bold text-slate-500">
                 Giá từ:
               </span>
-              <p className="text-[19px] font-black leading-none text-sky-600 tracking-tighter">
+              <p className="text-[19px] font-black leading-none text-red-600 tracking-tighter">
                 {formatVND(tour.price)}
               </p>
             </div>
@@ -327,7 +327,7 @@ export default function HomeAIRecommendationsSection() {
   const recommendations = data?.recommendations ?? [];
 
   return (
-    <section className="bg-white px-4 py-12 sm:px-6 lg:px-20">
+    <section className="bg-white px-4 py-6 sm:px-6 lg:px-20">
       <div className="mx-auto max-w-[1440px]">
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="space-y-4">
@@ -335,7 +335,7 @@ export default function HomeAIRecommendationsSection() {
               <h2 className="text-3xl font-black uppercase tracking-tight text-[#0f5cab] sm:text-4xl">
                 {user?.user_id ? "DÀNH RIÊNG CHO BẠN" : "GỢI Ý TOUR NỔI BẬT"}
               </h2>
-              <span className="absolute -bottom-2 left-0 h-[4px] w-16 rounded-full bg-[#0f5cab]" />
+              <span className="absolute -bottom-2 left-0 h-[4px] w-full rounded-full bg-[#0f5cab]" />
             </div>
 
             <p className="max-w-2xl text-base font-medium text-slate-700 sm:text-lg">

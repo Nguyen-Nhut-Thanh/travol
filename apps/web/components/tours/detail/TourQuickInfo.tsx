@@ -73,7 +73,7 @@ export default function TourQuickInfo({ tour }: Props) {
   ];
 
   return (
-    <section className="bg-white py-12">
+    <section className="bg-white pt-4 pb-4">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 space-y-5">
           <h3 className="text-center text-2xl font-black text-slate-900 md:text-[28px]">
